@@ -53,10 +53,10 @@ namespace FrontDesk.Api.AppointmentEndpoints
       var apptToUpdate = schedule.Appointments
                             .FirstOrDefault(a => a.Id == request.Id);
       apptToUpdate.UpdateAppointmentType(apptType, schedule.AppointmentUpdatedHandler);
-      apptToUpdate.UpdateRoom(request.RoomId);
+      apptToUpdate.UpdateRoom(request.RoomId, schedule.AppointmentUpdatedHandler);
       apptToUpdate.UpdateStartTime(request.Start, schedule.AppointmentUpdatedHandler);
       apptToUpdate.UpdateTitle(request.Title);
-      apptToUpdate.UpdateDoctor(request.DoctorId);
+      apptToUpdate.UpdateDoctor(request.DoctorId, schedule.AppointmentUpdatedHandler);
 
       await _scheduleRepository.UpdateAsync(schedule);
 

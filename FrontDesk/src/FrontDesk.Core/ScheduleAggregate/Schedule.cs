@@ -69,19 +69,34 @@ namespace FrontDesk.Core.ScheduleAggregate
     {
       foreach (var appointment in _appointments)
       {
-        // same patient cannot have two appointments at same time
-        var potentiallyConflictingAppointments = _appointments
+        // Same patient cannot have two appointments at same time
+        var appointmentsConflictingBySamePatient = _appointments
             .Where(a => a.PatientId == appointment.PatientId &&
             a.TimeRange.Overlaps(appointment.TimeRange) &&
             a != appointment)
             .ToList();
 
-        // TODO: Add a rule to mark overlapping appointments in same room as conflicting
-        // TODO: Add a rule to mark same doctor with overlapping appointments as conflicting
+        // Same room cannot have two appointments at same time
+        var appointmentsConflictingBySameRoom = _appointments
+          .Where(a => a.RoomId == appointment.RoomId &&
+          a.TimeRange.Overlaps(appointment.TimeRange) &&
+          a != appointment)
+          .ToList();
 
-        potentiallyConflictingAppointments.ForEach(a => a.IsPotentiallyConflicting = true);
+        // Same doctor cannot have two appointments at same time
+        var appointmentsConflictingBySameDoctor = _appointments
+          .Where(a => a.DoctorId == appointment.DoctorId &&
+          a.TimeRange.Overlaps(appointment.TimeRange) &&
+          a != appointment)
+          .ToList();
 
-        appointment.IsPotentiallyConflicting = potentiallyConflictingAppointments.Any();
+        appointmentsConflictingBySamePatient.ForEach(a => a.IsPotentiallyConflicting = true);
+        appointmentsConflictingBySameRoom.ForEach(a => a.IsPotentiallyConflicting = true);
+        appointmentsConflictingBySameDoctor.ForEach(a => a.IsPotentiallyConflicting = true);
+
+        appointment.IsPotentiallyConflicting = appointmentsConflictingBySamePatient.Any()
+          || appointmentsConflictingBySameRoom.Any()
+          || appointmentsConflictingBySameDoctor.Any();
       }
     }
 
@@ -90,7 +105,6 @@ namespace FrontDesk.Core.ScheduleAggregate
     /// </summary>
     public void AppointmentUpdatedHandler()
     {
-      // TODO: Add ScheduleHandler calls to UpdateDoctor, UpdateRoom to complete additional rules described in MarkConflictingAppointments
       MarkConflictingAppointments();
     }
   }

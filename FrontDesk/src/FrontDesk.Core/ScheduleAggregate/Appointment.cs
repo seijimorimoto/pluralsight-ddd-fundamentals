@@ -45,23 +45,29 @@ namespace FrontDesk.Core.ScheduleAggregate
     public DateTimeOffset? DateTimeConfirmed { get; set; }
     public bool IsPotentiallyConflicting { get; set; }
 
-    public void UpdateRoom(int newRoomId)
+    public void UpdateRoom(int newRoomId,
+      Action scheduleHandler)
     {
       Guard.Against.NegativeOrZero(newRoomId, nameof(newRoomId));
       if (newRoomId == RoomId) return;
 
       RoomId = newRoomId;
 
+      scheduleHandler?.Invoke();
+
       var appointmentUpdatedEvent = new AppointmentUpdatedEvent(this);
       Events.Add(appointmentUpdatedEvent);
     }
 
-    public void UpdateDoctor(int newDoctorId)
+    public void UpdateDoctor(int newDoctorId,
+      Action scheduleHandler)
     {
       Guard.Against.NegativeOrZero(newDoctorId, nameof(newDoctorId));
       if (newDoctorId == DoctorId) return;
 
       DoctorId = newDoctorId;
+
+      scheduleHandler?.Invoke();
 
       var appointmentUpdatedEvent = new AppointmentUpdatedEvent(this);
       Events.Add(appointmentUpdatedEvent);
