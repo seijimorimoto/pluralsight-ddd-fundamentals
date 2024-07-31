@@ -10,10 +10,10 @@ using Xunit;
 
 namespace IntegrationTests.ScheduleTests
 {
-  public class EfRepositoryGetByScheduleByIdWithAppointmentsSpec : IClassFixture<SharedDatabaseFixture>
+  public class EfRepositoryGetByScheduleByIdAndDateWithAppointmentsSpec : IClassFixture<SharedDatabaseFixture>
   {
     public SharedDatabaseFixture Fixture { get; }
-    public EfRepositoryGetByScheduleByIdWithAppointmentsSpec(SharedDatabaseFixture fixture) => Fixture = fixture;
+    public EfRepositoryGetByScheduleByIdAndDateWithAppointmentsSpec(SharedDatabaseFixture fixture) => Fixture = fixture;
 
     [Fact]
     public async Task ReturnScheduleWithAllAppointments()
@@ -30,7 +30,7 @@ namespace IntegrationTests.ScheduleTests
         var repo1 = new EfRepository<Schedule>(Fixture.CreateContext(transaction));
         await repo1.AddAsync(newSchedule);
 
-        var spec = new ScheduleByIdWithAppointmentsSpec(id);
+        var spec = new ScheduleByIdAndDateWithAppointmentsSpec(id, AppointmentBuilder.TEST_START_TIME);
         var repo2 = new EfRepository<Schedule>(Fixture.CreateContext(transaction));
         var scheduleFromRepo = await repo2.GetBySpecAsync(spec);
 

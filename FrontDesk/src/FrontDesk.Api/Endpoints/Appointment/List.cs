@@ -52,15 +52,14 @@ namespace FrontDesk.Api.AppointmentEndpoints
     public override async Task<ActionResult<ListAppointmentResponse>> HandleAsync([FromRoute] ListAppointmentRequest request,
       CancellationToken cancellationToken)
     {
-      var response = new ListAppointmentResponse(request.CorrelationId());
+    var response = new ListAppointmentResponse(request.CorrelationId());
       Schedule schedule = null;
       if (request.ScheduleId == Guid.Empty)
       {
         return NotFound();
       }
 
-      // TODO: Get date from API request and use a specification that only includes appointments on that date.
-      var spec = new ScheduleByIdWithAppointmentsSpec(request.ScheduleId);
+      var spec = new ScheduleByIdAndDateWithAppointmentsSpec(request.ScheduleId, request.Date);
       schedule = await _scheduleRepository.GetBySpecAsync(spec);
       if (schedule == null) throw new ScheduleNotFoundException($"No schedule found for id {request.ScheduleId}.");
 

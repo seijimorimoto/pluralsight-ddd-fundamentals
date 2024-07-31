@@ -103,7 +103,7 @@ namespace FrontDesk.Blazor.Pages
       Logger.LogInformation($"Loaded schedule: {schedule.Id}");
       ScheduleId = schedule.Id;
 
-      SchedulerService.Appointments = await AppointmentService.ListAsync(ScheduleId);
+      SchedulerService.Appointments = await AppointmentService.ListAsync(ScheduleId, DayStart);
       AppointmentTypes = await AppointmentTypeService.ListAsync();
       Clients = await ClientService.ListAsync();
       Rooms = await RoomService.ListAsync();
@@ -234,7 +234,7 @@ namespace FrontDesk.Blazor.Pages
       //an event callback needs to be raised in this component context to re-render the contents and to hide the dialog
       CustomEditFormShown = false;
       CurrentAppointment = null;
-      var appointments = await AppointmentService.ListAsync(ScheduleId);
+      var appointments = await AppointmentService.ListAsync(ScheduleId, DayStart);
       SchedulerService.RefreshAppointments(appointments);
     }
 
@@ -268,7 +268,7 @@ namespace FrontDesk.Blazor.Pages
     private async Task DeleteAppointmentAsync(SchedulerDeleteEventArgs args)
     {
       AppointmentDto item = (AppointmentDto)args.Item;
-      await AppointmentService.DeleteAsync(item.ScheduleId, item.AppointmentId);
+      await AppointmentService.DeleteAsync(item.ScheduleId, item.AppointmentId, item.Start);
       SchedulerService.Appointments.Remove(item);
     }
 

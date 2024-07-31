@@ -48,7 +48,7 @@ namespace FrontDesk.Api.AppointmentEndpoints
     {
       var response = new CreateAppointmentResponse(request.CorrelationId());
 
-      var spec = new ScheduleByIdWithAppointmentsSpec(request.ScheduleId); // TODO: Just get that day's appointments
+      var spec = new ScheduleByIdAndDateWithAppointmentsSpec(request.ScheduleId, request.DateOfAppointment);
       var schedule = await _scheduleRepository.GetBySpecAsync(spec);
 
       var appointmentType = await _appointmentTypeReadRepository.GetByIdAsync(request.AppointmentTypeId);

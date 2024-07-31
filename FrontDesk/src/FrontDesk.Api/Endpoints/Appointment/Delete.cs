@@ -39,7 +39,7 @@ namespace FrontDesk.Api.AppointmentEndpoints
     {
       var response = new DeleteAppointmentResponse(request.CorrelationId());
 
-      var spec = new ScheduleByIdWithAppointmentsSpec(request.ScheduleId); // TODO: Just get that day's appointments
+      var spec = new ScheduleByIdAndDateWithAppointmentsSpec(request.ScheduleId, request.Date);
       var schedule = await _scheduleReadRepository.GetBySpecAsync(spec);
 
       var apptToDelete = schedule.Appointments.FirstOrDefault(a => a.Id == request.AppointmentId);

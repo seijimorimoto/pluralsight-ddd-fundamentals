@@ -29,26 +29,29 @@ namespace FrontDesk.Blazor.Services
       return (await _httpService.HttpPutAsync<UpdateAppointmentResponse>(UpdateAppointmentRequest.Route, appointment)).Appointment;
     }
 
-    public Task DeleteAsync(Guid scheduleId, Guid appointmentId)
+    public Task DeleteAsync(Guid scheduleId, Guid appointmentId, DateTimeOffset date)
     {
       string route = GetByIdAppointmentRequest.Route.Replace("{ScheduleId}", scheduleId.ToString());
       route = route.Replace("{AppointmentId}", appointmentId.ToString());
+      route = route.Replace("{Date}", date.ToString("yyyy-MM-dd"));
 
       return _httpService.HttpDeleteAsync<DeleteAppointmentResponse>(route);
     }
 
-    public async Task<AppointmentDto> GetByIdAsync(Guid scheduleId, Guid appointmentId)
+    public async Task<AppointmentDto> GetByIdAsync(Guid scheduleId, Guid appointmentId, DateTimeOffset date)
     {
       string route = GetByIdAppointmentRequest.Route.Replace($"{{{nameof(GetByIdAppointmentRequest.ScheduleId)}}}", scheduleId.ToString());
       route = route.Replace("{AppointmentId}", appointmentId.ToString());
+      route = route.Replace("{Date}", date.ToString("yyyy-MM-dd"));
       return (await _httpService.HttpGetAsync<GetByIdAppointmentResponse>(route)).Appointment;
     }
 
-    public async Task<List<AppointmentDto>> ListAsync(Guid scheduleId)
+    public async Task<List<AppointmentDto>> ListAsync(Guid scheduleId, DateTimeOffset date)
     {
       _logger.LogInformation("Fetching appointments from API.");
 
       string route = ListAppointmentRequest.Route.Replace($"{{{nameof(ListAppointmentRequest.ScheduleId)}}}", scheduleId.ToString());
+      route = route.Replace("{Date}", date.ToString("yyyy-MM-dd"));
       return (await _httpService.HttpGetAsync<ListAppointmentResponse>(route)).Appointments;
     }
   }
